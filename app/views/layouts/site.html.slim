@@ -1,0 +1,43 @@
+doctype html
+/![if lte IE 9]><html xmlns:ng="http://angularjs.org" id="ng-app" ng-app="app" ng-controller="ApplicationCtrl" class="lteie8"><![endif]
+/![if gt IE 9]>
+html#ng-app ng-app="app" ng-controller="ApplicationCtrl" ng-init="init(#{current_city.serialize})"
+  /!<![endif]
+  head
+    title #{yield :meta_title} | Gettable - бронирование столиков онлайн.
+    meta charset="UTF-8"
+    meta content="width=1024" name="viewport"
+    meta content="#{yield :meta_description}" name="description"
+    meta content="text/html;charset=utf-8" http-equiv="Content-Type"
+    meta content="app-id=806188192" name="apple-itunes-app"
+    link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"
+    link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"
+
+    link href="/apple-touch-icon-114.png" rel="apple-touch-icon" sizes="57x57"
+    link href="/apple-touch-icon-114.png" rel="apple-touch-icon" sizes="114x114"
+    link href="/apple-touch-icon-144.png" rel="apple-touch-icon" sizes="72x72"
+    link href="/apple-touch-icon-144.png" rel="apple-touch-icon" sizes="144x144"
+
+    - if canonical = canonical_url
+      link href=canonical rel="canonical"
+
+    - if alternate = alternate_url
+      link href=alternate media="only screen and (max-width: 750px)" rel="alternate"
+
+    = stylesheet_link_tag "site/application", media: "all"
+
+    /![if lt IE 9]><script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]
+    /![if lt IE 8]><script>document.createElement('ya-map');document.createElement('ya-toolbar');document.createElement('ya-template-layout');document.createElement('ya-collection');document.createElement('ya-geo-object');</script><![endif]
+    = csrf_meta_tags
+
+    = javascript_include_tag "site/application"
+    / = javascript_include_tag "http://gettable.dev:3000/assets/widget.js"
+
+  body class=('inner-page' if inner_page?)
+    = render "site/shared/header"
+    = yield
+    = render "site/shared/footer"
+
+  = javascript_include_tag "//cdn.gettable.ru/assets/widget.js"
+
+  = render 'site/shared/counters' if Rails.env.production?

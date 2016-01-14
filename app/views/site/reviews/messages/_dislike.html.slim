@@ -1,0 +1,24 @@
+.holder.holder_dont-like
+  .holder__bg style="background-image: url(#{asset_url('site/holder2.jpg')});"
+  .holder__main
+    i.icon.icon-unlike
+    .holder__title Мне не понравилось!
+    p
+      | Очень жаль, что вам не понравилось
+      br
+        |
+        strong<> =@booking.place.title
+        | :(
+    .holder__info Мы очень старались, чтобы забронировать вам хороший столик и ваш вечер прошел хорошо.
+
+.main
+  .container
+    .send-message
+      i.icon.icon-plan
+      .send-message__info
+        | Спасибо за ваш отзыв и использование
+        strong<> Gettable
+        br
+          | мы обязательно свяжемся с управляющим
+          strong<> =@booking.place.title
+          br по вашей ситуации.

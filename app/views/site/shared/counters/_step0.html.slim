@@ -1,0 +1,20 @@
+javascript:
+  var promo = "#{place_active_promo(@place)[:kind] if place_active_promo(@place)}"
+
+  if(promo != ''){
+    var pageviewHead = "bardeposit/#{@place.id}/" + promo
+  }else{
+    pageviewHead = "bardeposit/#{@place.id}"
+  }
+
+  ga('send', 'pageview', pageviewHead + '/step0');
+
+  var simiar = "#{true if !@place.working_day? && @place.similar_available.any?}"
+  if(simiar){
+    ga('send', 'pageview', pageviewHead + '/step0_nottoday');
+  }
+
+.counters style="height: 0"
+  img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/993127347/?value=0&amp;label=hYVSCK2stAQQs9fH2QM&amp;guid=ON&amp;script=0&amp;data=pcat%3Dstep0%3Bpname%3D#{@place.id}%3Bpagetype%3Drest%3Bprodid%3Dresto_site"
+
+  img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/970470467/?value=1.000000&amp;label=OUn4CN2v9QgQw-jgzgM&amp;guid=ON&amp;script=0"

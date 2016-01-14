@@ -1,0 +1,17 @@
+.main
+  .offer__term.offer__body
+    .container
+      .main-title Ошибка 422
+      p Запрос не может быть обработан.
+
+  .place__list ng-controller="PlacesCtrl" ng-init="appSettings.title = 'Страница не найдена'"
+    .container ng-show="places.length"
+      .title-h3
+        i.icon.icon-bocal
+        | Мы с командой посовещались и подобрали для вас рестораны, которые могут вам понравиться:
+      .item-wrap-small
+        div ng-repeat="place in places | limitTo:9"
+          div similar-place="place"
+
+      .to-center
+        a.btn.btn_simple.btn-default href=site_pages_path("msk/search")  Показать другие рестораны

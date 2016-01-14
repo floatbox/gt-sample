@@ -1,0 +1,259 @@
+= content_for :meta_title, 'Забронируйте столик онлайн'
+
+div ng-controller="IndexCtrl"
+  .slider
+    .search
+      .container.container_filter
+        .search__title
+          a (
+            href=current_city_search_path
+            analytics-on="click"
+            analytics-event="index/resto_count/click"
+            analytics-category="search_link"
+          )
+            = t '.restaurants', count: current_city.resto_count
+            br
+            = current_city.name_r
+        .input-group.input-group_search
+          input.form-control (
+            placeholder="Поиск по названию ресторана"
+            type="text"
+            ng-model="autocomplete"
+            typeahead="place.title for place in getByTitle($viewValue)"
+            typeahead-template-url="site/search/autocomplete_list.html"
+            typeahead-on-select="goToPlace($item, $model, $label)"
+          )
+            i
+        span.search__text-sep> или
+        .btn-group.btn-group_metro.tn-group-lg
+          button.btn.btn-default.dropdown-toggle type="button"
+            i.icon.icon-metro
+            strong Поиск по метро
+            span.caret
+          .dropdown-menu.drop-list role="menu"
+            ul (
+              keyboard-list-select
+              keyboard-list-select-on-select="goToMetroLanding($item.station.landing_link)"
+            )
+              li (
+                ng-repeat="station in metro"
+                ng-class="{active: isActive($index) }"
+                ng-mouseenter="selectActive($index)"
+                ng-click="selectMatch($index)"
+              )
+                a ng-href="{{station.landing_link}}" ng-bind="station.name"
+
+    .main-slider
+      .slider__item (
+        class="slider__item-{{$index}}"
+        ng-class="{ 'is-active' : mainSlider.index == $index }"
+        ng-repeat="slide in mainSlider.content"
+      )
+        .slider__bg ng-style="{ 'background-image': 'url(' + slide.background + ')' }"
+        .container
+          .slider__title
+            span (
+              ng-bind="slide.title"
+              ng-click="nextSlide('mainSlider')"
+            )
+
+            p ng-click="nextSlide('mainSlider')"
+
+              | {{ slide.description.replace('__needle__', '#{t '.most_interesting_restaurants', count: current_city.resto_count}') }}
+
+              a (
+                ng-show="slide.link_href"
+                ng-href="{{ slide.link_href }}"
+                ng-bind-html="slide.link_title"
+              )
+
+          .slider__img
+            img (
+              alt=""
+              ng-src="{{slide.image}}"
+              ng-click="nextSlide('mainSlider')"
+            )
+    .slider__pager
+      button (
+        ng-repeat="slide in mainSlider.content"
+        ng-class="{ 'active' : mainSlider.index == $index }"
+        ng-click="mainSlider.index = $index"
+      )
+    .slider__nav.slider__nav-next ng-click="nextSlide('mainSlider')"
+
+  - if City::ACTIVE.include?(current_city.permalink)
+
+    .section-kitchen
+      .container
+        .main-title
+          a> (
+            href=""
+            ng-class="{ active: tab=='kitchen'}"
+            ng-click="tab='kitchen'"
+            analytics-on="click"
+            analytics-event="index/tabs/kitchen/click"
+            analytics-category="tabs"
+          )  Выбрать кухню
+          span> или
+          a< (
+            href=""
+            ng-class="{ active: tab=='feature'}"
+            ng-click="tab='feature'"
+            analytics-on="click"
+            analytics-event="index/tabs/feature/click"
+            analytics-category="tabs"
+          ) где отдохнуть
+        .kitchen-wrap (
+          ng-class="{ 'kitchen-wrap_place': tab=='feature' }"
+          ng-swipe-left="tab='feature'"
+          ng-swipe-right="tab='kitchen'"
+        )
+          a.kitchen (
+            ng-href="{{landing.href}}"
+            ng-class="{ 'kitchen_place': tab=='feature'}"
+            ng-repeat="landing in mode[tab]"
+          )
+            .kitchen__img back-image="landing.image"
+            span ng-bind="landing.title"
+          .to-center
+            a.btn.btn_simple.btn-default (
+              href=current_city_search_path
+              analytics-on="click"
+              analytics-event="index/tabs/all_resto/click"
+              analytics-category="search_link"
+            ) Показать все рестораны
+
+    .resto
+      .container
+        .main-title
+          i.icon.icon-city
+          | Известные в городе:
+        .resto__slide-container
+          .resto__slide (
+            ng-repeat="placeGroupRow in placeGroupSlider.content | chunk:4"
+            ng-show="placeGroupSlider.index == $index"
+            ng-class="{ 'is-active' : placeGroupSlider.index == $index }"
+            ng-swipe-left="prevSlide('placeGroupSlider', 4)"
+            ng-swipe-right="nextSlide('placeGroupSlider', 4)"
+          )
+            .resto__item ng-repeat="placeGroup in placeGroupRow"
+              a class="resto__img" ng-href="{{placeGroup.landing_link}}"
+                img height="213" ng-src="{{placeGroup.logo}}" width="213"
+              a.resto__title ng-href="{{placeGroup.landing_link}}" ng-bind="placeGroup.title"
+              a.resto__link ng-href="{{placeGroup.landing_link}}"
+                ng-pluralize count="placeGroup.resto_count" when="{'one': '{} ресторан', 'few':'{} ресторана', 'many': '{} ресторанов'}"
+        button.btn-prev ng-click="prevSlide('placeGroupSlider', 4)"
+        button.btn-next ng-click="nextSlide('placeGroupSlider', 4)"
+      .carousel__pager
+        button (
+          ng-repeat="placeGroupRow in placeGroupSlider.content | chunk:4"
+          ng-class="{ 'active' : placeGroupSlider.index == $index }"
+          ng-click="placeGroupSlider.setIndex($index)"
+        )
+
+    .funny-slider infinite-scroll="showPlaceImg = true" infinite-scroll-distance="1"
+      .container
+        .main-title
+          i.icon class="icon-{{filters[selectedFilters.top].value}}"
+          | {{filterTitles[filters[selectedFilters.top].title]}}
+        .to-center
+          .btn-group.btn-group-lg.btn-group_tabs
+            button.btn.btn-default (
+              type="button"
+              ng-model="selectedFilters.top"
+              btn-radio="$index"
+              ng-repeat="filter in filters"
+              ng-click="selectedFilters.bottom = 0"
+              analytics-on="click"
+              analytics-event="index/search/buttons/{{filter.value}}/click"
+              analytics-category="filter"
+            )
+              i.icon class="icon-filter-{{filter.value}}"
+              | {{filter.title}}
+          .radio-group
+            label.radio-label ng-repeat="label in filters[selectedFilters.top].filters"
+              input (
+                name="opts"
+                type="radio"
+                ng-model="selectedFilters.bottom"
+                value="{{$index}}"
+                analytics-on="click"
+                analytics-event="index/search/radio/{{label.value}}/click"
+                analytics-category="filter"
+              )
+                span
+                  | {{label.title}}
+
+        .cycle-slideshow-wrap
+          .cycle-slideshow ng-swipe-right="prevSlide('placeSlider')" ng-swipe-left="nextSlide('placeSlider')"
+            .place-wrapper
+              .place (
+                index-place="place"
+                ng-class="{ active: $index == prevPlaceIndex(2) }"
+                class="{{direction}}"
+                ng-repeat="place in placeSlider.content"
+                ng-if="showPlaceImg"
+              )
+            .place-wrapper
+              .place (
+                index-place="place"
+                ng-class="{ active: $index == prevPlaceIndex(1) }"
+                class="{{direction}}"
+                ng-repeat="place in placeSlider.content"
+                ng-if="showPlaceImg"
+              )
+            a.place-wrapper.is-current ng-href="{{placeSlider.content[placeSlider.index].link}}"
+              .place (
+                index-place="place"
+                ng-class="{ active: $index == placeSlider.index }"
+                class="{{direction}}"
+                ng-repeat="place in placeSlider.content"
+                ng-if="showPlaceImg"
+              )
+            .place-wrapper
+              .place (
+                index-place="place"
+                ng-class="{ active: $index == nextPlaceIndex(1) }"
+                class="{{direction}}"
+                ng-repeat="place in placeSlider.content"
+                ng-if="showPlaceImg"
+              )
+            .place-wrapper
+              .place (
+                index-place="place"
+                ng-class="{ active: $index == nextPlaceIndex(2) }"
+                class="{{direction}}"
+                ng-repeat="place in placeSlider.content"
+                ng-if="showPlaceImg"
+              )
+
+        .container
+          button.btn-funny-prev ng-click="prevSlide('placeSlider')"
+          button.btn-funny-next ng-click="nextSlide('placeSlider')"
+      .to-center
+        | {{placeSlider.index+1}} из {{placeSlider.content.length}} ресторанов
+
+    .app
+      .container
+        .main-title
+          a (
+            href="http://app.appsflyer.com/id806188192?pid=gettable&c=main"
+            analytics-on="click"
+            analytics-event="index/app_store/title/click"
+            analytics-category="iphone_app_link"
+          )
+            i.icon.icon-app
+            | Скачайте бесплатное приложение
+        .app__info
+          .app__title Носи все рестораны в кармане!
+          p Находи лучшие рестораны поблизости. Бесплатное приложение для iPhone от Gettable
+          .app__btn
+            a (
+              href="http://app.appsflyer.com/id806188192?pid=gettable&c=main"
+              analytics-on="click"
+              analytics-event="index/app_store/button/click"
+              analytics-category="iphone_app_link"
+            )
+            i
+      .app__bg style=("background-image: url(#{asset_path 'site/app-bg.jpg'});")
+      img.app__img alt="" src=asset_path("site/app-hand.png")

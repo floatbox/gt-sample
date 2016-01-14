@@ -1,0 +1,18 @@
+#sort-section.sort-section
+  .sort-section__in
+    .container
+      ol.breadcrumb xmlns:v="http://rdf.data-vocabulary.org/#"
+        = render 'breadcrumbs_list', breadcrumbs: current_place.breadcrumbs
+
+      - if current_place.breadcrumbs_titles_length < 50
+        .place-search-input.pull-right
+          .input-group.input-group_search
+            input.form-control (
+              ng-model="autocomplete"
+              placeholder="Поиск по названию..."
+              type="text"
+              typeahead="place.title for place in getByTitle($viewValue)"
+              typeahead-template-url="site/search/autocomplete_list.html"
+              typeahead-on-select="goToPlace($item, $model, $label)"
+            )
+              i

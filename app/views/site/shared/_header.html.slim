@@ -1,0 +1,57 @@
+= render partial: 'site/shared/top_banner'
+.page-header.clearfix class=current_month_class
+  .container
+    a.logo href=root_url
+
+    - if @place
+
+      - if @place.show_phone?
+
+        - if (dedicated_phone = @place.dedicated_phone_extended) && !dedicated_phone.blank?
+          a.header_phone href="tel:#{dedicated_phone}" = formatted_phone(dedicated_phone)
+        - else
+          a.header_phone href="tel:#{site_utm_phone_plain}" = site_utm_phone
+
+    - else
+      a.header_phone href="tel:#{site_utm_phone_plain}" = site_utm_phone
+
+    - if current_city.msk? && current_event_actual?
+      .current_event
+        = link_to '', current_event_link, :class => current_event_class
+
+    - if @place
+      noindex
+        .page-header__stat
+          strong> #{bookings_today} чел.
+          | сегодня забронировали столики через gettable
+    - else
+      .btn-group.btn-group_simple
+        button.btn.btn-default.dropdown-toggle (
+          data-toggle="dropdown"
+          type="button"
+          analytics-on="click"
+          analytics-event="hearder/city/select"
+          analytics-category="dropdowns"
+        )
+          i.icon.icon-earth
+          strong = current_city.name
+          span.caret
+        ul.dropdown-menu.dropdown-menu_city role="menu"
+          - City.launched.sorted.each do |city|
+            li class="#{'is-active' if current_city.permalink == city.permalink}"
+              a> href=city_root_url(city)
+                = city.name
+                sup< #{city.resto_count}
+      - if home_page?
+        .filter-view
+          a (
+            href=current_city_search_path
+            analytics-on="click"
+            analytics-event="hearder/resto_count/click"
+            analytics-category="search_link"
+          )
+            i.icon.icon-list
+            span = t 'site.pages.index.restaurants', count: current_city.resto_count
+          a href=current_city_map_path
+            i.icon.icon-point
+            span На карте

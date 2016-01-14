@@ -1,0 +1,14 @@
+- breadcrumbs.each do |breadcrumb|
+  li (
+      typeof="v:Breadcrumb"
+      class="#{breadcrumb == breadcrumbs.last && 'active' }"
+    )
+      - unless breadcrumb == breadcrumbs.last
+        a (
+          rel="v:url"
+          property="v:title"
+          href="#{root_url[0..-2]}#{breadcrumb[:link]}"
+        ) = breadcrumb[:title]
+
+      - else
+        span = breadcrumb[:title]

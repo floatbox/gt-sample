@@ -1,0 +1,22 @@
+.main-section
+  #container.container.wrap
+    .main-col.item-wrap
+      - current_landing.places.take(10).each do |place|
+        .item
+          .item__wrap
+            .item__in
+              .item__card
+                .item__img
+                  img alt="#{place.title}" src="#{place.search_image}"
+                  a.item__img-link href="#{place.link}"
+                .item__main
+                  .item__title
+                    .item__title-link
+                      a href="#{place.link}" title="#{place.title}" = place.title
+                    a.item__like href="#{place.link}" = place.likes
+                  .item__text  = place.description
+                  .item__metro
+                    - if place.metro_station
+                      a.item__metro-link href="/msk/metro/#{place.metro_station.permalink}"
+                        i.icon.icon-point
+                        | м. #{place.metro_station.name}

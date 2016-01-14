@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    meta charset="utf-8"
+    meta content="initial-scale=1" name="viewport"
+
+    title Gettable
+
+    = stylesheet_link_tag "newwidget/application", media: "all"
+    = csrf_meta_tags
+
+    /![if IE]><script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]
+    = javascript_include_tag "newwidget/application"
+
+  body class="#{like_ipad? ? 'ipad' : 'site'}"
+
+    .outwidgets (
+      ng-controller="ApplicationCtrl"
+      ng-init="booking_hash = #{@booking_hash.to_json}; init(booking_hash);"
+    )
+
+      = yield
+
+  = render 'newwidget/shared/counters' if Rails.env.production?

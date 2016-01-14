@@ -1,0 +1,65 @@
+#sort-section.sort-section ng-class="{ 'sort-section_map': appSettings.mode == '!/map'}"
+  .sort-section__in
+    .container
+      ol.breadcrumb xmlns:v="http://rdf.data-vocabulary.org/#"
+        li (
+          typeof="v:Breadcrumb"
+          ng-repeat="breadcrumb in appSettings.breadcrumbs"
+          ng-class="{ active: $index == appSettings.breadcrumbs.length -1 }"
+        )
+          a (
+            rel="v:url"
+            property="v:title"
+            ng-href="#{root_url[0..-2]}{{breadcrumb.link}}"
+            ng-if="$index != appSettings.breadcrumbs.length -1"
+            ng-bind="breadcrumb.title"
+          )
+          span (
+            ng-if="$index == appSettings.breadcrumbs.length -1"
+            ng-bind="breadcrumb.title"
+          )
+
+      .btn-group.btn-group_styled.btn-group_icon ng-if="appSettings.mode=='/search' || appSettings.mode=='/map'"
+        a.btn (
+          ng-model="appSettings.mode"
+          ng-href="#/search?filter={{filtersAsParam()}}"
+          ng-class="{ active: appSettings.mode=='/search' }"
+        )
+          i.icon-list-black
+        a.btn (
+          ng-model="appSettings.mode"
+          ng-href="#/map?filter={{filtersAsParam()}}"
+          ng-class="{ active: appSettings.mode=='/map' }"
+        )
+          i.icon-map
+
+      .btn-group.btn-group_styled ng-if="appSettings.mode=='/search'"
+        button.btn (
+          type="button"
+          ng-model="selectedFilters.sort"
+          btn-radio="[{ value: 'popular' }]"
+          analytics-on="click"
+          analytics-event="search/nav/popular/click"
+          analytics-category="nav"
+        ) Популярные
+        button.btn (
+          type="button"
+          ng-model="selectedFilters.sort"
+          btn-radio="[{ value: 'latest' }]"
+          analytics-on="click"
+          analytics-event="search/nav/latest/click"
+          analytics-category="nav"
+        ) Новинки
+
+      - if @page == 'place' && @place.breadcrumbs_titles_length < 50
+        .place-search-input.pull-right
+          .input-group.input-group_search
+            input.form-control (
+              ng-model="autocomplete"
+              placeholder="Поиск по названию..."
+              type="text"
+              typeahead="place.title for place in getByTitle($viewValue)"
+              typeahead-template-url="site/search/autocomplete_list.html"
+              typeahead-on-select="goToPlace($item, $model, $label)"
+            )
+              i

@@ -1,0 +1,78 @@
+#footer.page-footer.clearfix
+  -if show_top_footer?
+    .container.page-footer__top
+      - content_for :footer_seo do
+        .footer__seo
+          span.logo
+          p © 2012 - #{Time.now.year} GETTABLE
+          - if home_page?
+            h1 Забронировать столик – просто, быстро, гарантированно
+            p
+              | Где лучше провести вечер? Как идеально подобрать место для проведения деловой встречи? Как не ошибиться с заказом столика? Эти вопросы часто озадачивают многих людей, у которых планируется ответственное мероприятие или просто вечер для отдыха. Зайти в первый попавшийся ресторан – такое решение может обернуться неприятными последствиями и испорченным досугом. Сервис  Gettable поможет определиться с выбором заведения и заказать столик в несколько мгновений.
+              a< href="" ng-click="expanded = !expanded" ng-hide="expanded" Развернуть
+            p ng-show="expanded" Забронировать столик здесь еще проще. Определившись с заведением, достаточно будет нажать всего одну кнопку – «Заказать столик», после чего появится небольшая форма для ввода необходимой для бронирования информации – даты, времени, количества человек и так далее. Всего  несколько минут - и место выбрано, и столик забронирован, осталось только прийти вовремя и отлично провести запланированный вечер.
+            p ng-show="expanded" Никаких звонков в ресторан для уточнения не требуется – на Gettable заказ столиков полностью автоматический и гарантированный. Нет необходимости переживать и перестраховываться – все будет организовано по высшему разряду.
+            p ng-show="expanded" Удобная навигация, широкий выбор заведений, понятная и быстрая форма бронирования – Gettable предоставляет все необходимое для комфорта пользователя.
+            p ng-show="expanded"
+              | Сервис Gettable – лучший гарант правильного выбора ресторана и превосходного отдыха.
+              a< href="" ng-click="expanded = !expanded" ng-show="expanded" Свернуть
+            p
+              => site_utm_phone
+              | звоните нам c 9.00 до 2.00
+
+          - else
+            p
+              | Gettable - быстрейшая служба бронирования столиков в ресторанах
+              =<> "#{current_city.name_r}."
+              | Мы поможем вам выбрать, куда сходить сегодня вечером. #{ current_city.approximate_resto_count }+ лучших ресторанов в одном месте!
+            p Закажите столик онлайн, и за 2 минуты для вас будет забронирован лучший столик абсолютно бесплатно.
+            p
+              => site_utm_phone
+              | звоните нам c 9.00 до 2.00
+
+      - if home_page?
+        = yield :footer_seo
+      - else
+        noindex
+          = yield :footer_seo
+
+      div
+        - curernt_column = 0
+        - current_city.site_landings.for_footer.in_groups(2) do |landings|
+          .footer__nav
+            - if curernt_column == 0
+              .page-footer__title КАТЕГОРИИ
+            - curernt_column += 1
+            ul
+              - landings.each do |landing|
+                - if landing
+                  li: a href=landing.link = landing.link_title
+
+        .footer__nav
+          .page-footer__title Полезные ссылки
+          ul
+            / li:a href="//gettable.ru/partners"  Для ресторанов
+            li: a href=site_pages_url("blog")  Блог
+            li: a href=site_pages_url("gettable_offer")  Оферта
+            li: a href=site_pages_url("terms")  Пользовательское соглашение
+            li: a href=site_pages_url("contacts")  Контакты
+            li: a href=site_sitemap_index_path  Карта сайта
+  -if show_bottom_footer?
+    .page-footer__bottom
+      .container
+        .page-footer__soc#page-footer__soc
+        .page-footer__counter
+          .page-footer__title Сегодня забронировали
+          .counter
+            - bookings_today.to_s.split("").each do |s|
+              div
+                span
+                  i #{s}
+
+          .counter-text
+            | человек
+            br через Gettable
+        .page-footer__created
+          | Дизайн от
+          span.logo-created
+

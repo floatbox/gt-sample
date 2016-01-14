@@ -1,0 +1,50 @@
+- if @post
+
+  - content_for :meta_title, @post.title
+
+  .main-section.card-page.no-top-margin
+    .l-cols.shadow
+      .card-content.text-item.blog
+        .text-center.text-item__in
+          p
+            a.blog-root href=site_posts_path Блог
+      .l-col3
+        .text-item.with-pad
+          .publish.clearfix
+            p.onleft = Russian::strftime(@post.published_at, "%d %B %Y")
+            .publish__view.onright
+              span.is-last
+                i.eye
+                = @post.total_views
+          h1.h1 = @post.title
+          p.is-first = @post.description
+
+        - @post.post_parts.each do |post_part|
+          = send(post_part.kind, post_part)
+
+        .tags
+          - @post.tags.each do |tag|
+            a href=site_posts_path(tag: tag.title) = tag.title.downcase
+      hr
+      .popular.clearfix
+        h3 Популярное
+        - @post.popular.each do |post|
+          a.popular__item.onleft href=site_post_path(post)
+            - if post.photo_file_name
+              img alt=post.title src=post.photo.url(:small) width='250' height='200'
+            p = post.title
+
+- else
+
+  .main-section.card-page.no-top-margin
+    .l-cols.shadow
+      .card-content.text-item.blog
+        .text-center.text-item__in
+          p
+            a.blog-root href=site_posts_path Блог
+      .l-col3
+        .text-item.with-pad
+
+          h1.h1 Ошибка!
+
+

@@ -1,0 +1,5 @@
+.search-result ng-show="appSettings.mode=='/search'"
+  .search-result__bg ng-style="{'background-image':'url(' + landing.image + ')'}"
+  .search-result__main
+    h1.search-result__title ng-bind-html="landing.title"
+    h2.search-result__text ng-bind-html="landing.description"

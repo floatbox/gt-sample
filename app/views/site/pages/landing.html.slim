@@ -1,0 +1,10 @@
+div ng-controller="BaseSearchCtrl"
+  = render 'site/shared/nav'
+  = render 'site/shared/landing'
+
+  .bardepositContainer.landing
+    div ng-view=""
+
+    #landing-description.clearfix
+      .container
+        div landing-description="landing.landing_description"

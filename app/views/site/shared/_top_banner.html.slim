@@ -1,0 +1,68 @@
+div ng-controller="TopBannerCtrl" ng-cloak=""
+  #top-banner-flash ng-show="state == 'flash' && state != 'hidden'"
+    .tb-content.folded
+      = image_tag ('site/phone-cat-small.png'), class: 'tb-logo'
+      .tb-spacer.folded
+      .tb-cell
+        .tb-install-mobile.folded
+          | На ваш номер отправлено SMS со ссылкой на приложение.
+  #top-banner-folded ng-show="state == 'folded' && state != 'hidden'"
+    .tb-content.folded
+      = image_tag ('site/phone-cat-small.png'), class: 'tb-logo'
+      .tb-spacer.folded
+      .tb-cell
+        .tb-close (
+          ng-click="setState('hidden')"
+          analytics-on="click"
+          analytics-event="dekctop/popup/promo-iphoneapp/#{current_city.permalink}_TopBanner_short_X"
+        )
+        .tb-install-mobile.folded
+          | БОНУСНЫЙ БАЛЛ В ПОДАРОК
+          div.tb-btn-show-small(
+            ng-click="setState('unfolded', 320)"
+            analytics-on="click"
+            analytics-event="desktop/popup/promo-iphoneapp/#{current_city.permalink}_TopBanner_short_show"
+          )
+            = image_tag ('site/btn_show_small.png')
+
+  #top-banner ng-show="state == 'unfolded' && state != 'hidden'"
+    .tb-content
+      = image_tag ('site/phone-cat.png'), class: 'tb-logo'
+      .tb-spacer
+      .tb-cell
+        .tb-close (
+          ng-click="setState('folded')"
+          analytics-on="click"
+          analytics-event="desktop/popup/promo-iphoneapp/#{current_city.permalink}_TopBanner_full_X"
+        )
+        .tb-install-mobile
+          | Ходите в любимые рестораны и получайте
+          br
+          | бонусы c приложением Gettable
+        .tb-row
+          | Получите бесплатную ссылку для загрузки приложения на ваш iPhone!
+        div
+          span.tb-phone-prefix
+           | +7
+          form.tb-sms-form name="smsForm"
+            input.tb-phone-input(
+              ng-required="true"
+              type="phone"
+              ng-model="phoneNumber"
+              ui-mask="(999) 999-99-99"
+            )
+            .tb-send-code(
+              type="submit"
+              ng-click="sendSms()"
+              analytics-on="click"
+              analytics-event="desktop/popup/promo-iphoneapp/#{current_city.permalink}_TopBanner_full_getlink"
+              ng-disabled="smsForm.$invalid"
+              ng-class="{ 'tb-send-code-disabled': smsForm.$invalid }"
+            )
+              = image_tag ('site/btn_get_app_small.png'), class: 'tb-btn-send'
+        .tb-gift-info
+          | БОНУСНЫЙ БАЛЛ В ПОДАРОК при установке
+        .tb-row
+          | Приложение Gettable доступно для iPhone.
+          br
+          | Вы можете скачать его бесплатно в AppStore.

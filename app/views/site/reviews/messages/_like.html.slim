@@ -1,0 +1,23 @@
+.holder.holder_dont-like
+  .holder__bg style="background-image: url(#{asset_url('site/holder3.jpg')});"
+  .holder__main
+    i.icon.icon-like-big
+    .holder__title Мне понравилось!
+    p
+      | Рады, что вам понравилось
+      br
+        | в
+        strong<> =@booking.place.title
+        | :)
+    .holder__info Мы очень старались, чтобы забронировать вам хороший столик и ваш вечер прошел хорошо.
+
+.main
+  .container
+    .send-message
+      i.icon.icon-plan
+      .send-message__info
+        | Спасибо за ваш отзыв и использование
+        strong<> Gettable
+        br
+          | Мы обязательно передадим управляющему и персоналу ресторана ваш отзыв.
+

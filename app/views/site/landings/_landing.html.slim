@@ -1,0 +1,24 @@
+.search-result ng-show="appSettings.mode=='/search'"
+  .search-result__bg style="background-image: url(#{current_landing.panel_photo.url(:main)})"
+  .search-result__main
+    -if current_landing.filter_group_kind == 'site_metro_landing'
+      h1.search-result__title = metro_restaurant_title(current_landing.title.try(:html_safe))
+      p.search-result__text = current_landing.description.try(:html_safe)
+      -if current_landing.landing_description?
+        #search-result__description-top ng-hide="documentReady" = seo_description(current_landing.landing_description)
+    -else
+      h1.search-result__title = current_landing.title.try(:html_safe)
+      h2.search-result__text = current_landing.description.try(:html_safe)
+
+.bardepositContainer.landing
+  div ng-view=""
+    = render 'places_placeholder'
+
+
+  -if current_landing.landing_description?
+    #landing-description.clearfix
+      .container
+        -if current_landing.filter_group_kind == 'site_metro_landing'
+          #search-result__description-bottom
+        - else
+          div = seo_description(current_landing.landing_description)

@@ -1,0 +1,25 @@
+.holder.holder_dont-like
+  .holder__bg style="background-image: url(#{asset_url('site/holder3.jpg')});"
+  .holder__main
+    i.icon.icon-like-big
+    .holder__title Мне понравилось!
+    p
+      | Рады, что вам понравилось
+      br
+      | в
+      strong<> =@booking.place.title
+      | :)
+    .holder__info Мы очень старались, чтобы забронировать вам хороший столик и ваш вечер прошел хорошо.
+
+.main
+  .container
+    = form_for [:site, @review],  html: { class: "send-message", name: "reviewForm", novalidate: "novalidate", 'ng-submit' => "loading=true" } do |f|
+      i.icon.icon-message-green
+      .send-message__info
+        | Расскажите нам, что именно вам понравилось,
+        br и мы лично передадим это управляющему ресторана
+      .input-wrap.input-wrap_textarea
+        = f.text_area :description, class: "textarea", placeholder: "Ваше сообщение...", 'ng-model' => "message", 'ng-minlength' => "5", 'required' => "required"
+        = f.hidden_field :widget, :value => params[:widget]
+        = f.hidden_field :impression, :value => params[:impression]
+      button.btn.btn_white type="submit" ng-init="loading=false" ng-disabled="loading ||  reviewForm['review[description]'].$invalid" ng-bind="reviewForm['review[description]'].$invalid ? 'Расскажите немного больше' : 'Отправить благодарность ресторану'"

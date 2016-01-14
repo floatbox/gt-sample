@@ -1,0 +1,64 @@
+= content_for :meta_title do
+  = 'Контактная информация'
+
+div (itemscope itemtype="http://schema.org/Organization")
+  .holder.holder_contacts
+    .holder__bg style="background-image: url(#{asset_url('site/office.jpg')});"
+    .holder__main
+      i.icon.icon-team
+      .holder__title Свяжитесь с нами!
+      p
+        | Команда
+        strong<> itemprop="name" Gettable
+        | всегда готова ответить
+        br на любые Ваши вопросы
+  .main.main_contacts
+    .container
+      h2.title-h2 Наши контакты
+      .wrapper
+        .contact-wrap
+          .contact
+            .contact__img
+              img alt="" src=asset_url("site/egor.png")
+            .contact__title Общие вопросы
+            a (
+              href=""
+              onclick="window.location.href = 'mailto:sup'+'po'+'rt@'+'gettable.ru';"
+              itemprop="email"
+            ) support@gettable.ru
+            span itemprop="telephone" +7 (495) 255-09-08
+          .contact
+            .contact__img
+              img alt="" src=asset_url("site/vit2.png")
+            .contact__title Отдел продаж
+            a href="" onclick="window.location.href = 'mailto:sa'+'le'+'s@'+'gettable.ru';" sales@gettable.ru
+            span +7 (495) 966-38-48
+          .contact
+            .contact__img
+              img alt="" src=asset_url("site/vas1.png")
+            .contact__title Финансовый отдел
+            a href="" onclick="window.location.href = 'mailto:f'+'i'+'n@'+'gettable.ru';" fin@gettable.ru
+            span +7 (495) 255-11-81
+          .contact
+            .contact__img
+              img alt="" src=asset_url("site/dima.png")
+            .contact__title Технический отдел
+            a href="" onclick="window.location.href = 'mailto:d'+'e'+'v@'+'gettable.ru';" dev@gettable.ru
+      h2.title-h2 Наш адрес
+
+    .contacts (itemprop="address" itemscope itemtype="http://schema.org/PostalAddress")
+      | г.
+      span< itemprop="addressLocality" Москва
+      | ,
+      strong< itemprop="streetAddress" Варшавское шоссе, д. 33, стр. 13
+
+      ya-map.map-contacts (
+        ya-controls="smallMapDefaultSet"
+        ya-zoom="13"
+        ya-center="[37.623278, 55.691699]"
+      )
+        ya-geo-object (
+          ya-source="{ geometry: { type: 'Point', coordinates: [ 37.623278, 55.691699] }}"
+          ya-options="{ iconLayout: 'default#image', iconImageHref: '#{asset_url('site/marker.png')}', iconImageSize: [45, 49], iconImageOffset: [-15, -35] }"
+        )
+

@@ -1,0 +1,24 @@
+.holder.holder_places
+  .holder__bg style="background-image: url(#{asset_url('site/holder4.jpg')});"
+  .holder__main
+    i.icon.icon-smile
+    .holder__title Я не ходил
+    p
+      | Спасибо за честность! Надеемся в следующий раз у вас получится посетить
+      a< href=@booking.place.link  =@booking.place.title
+
+.main ng-controller="SimilarPlacesCtrl" ng-init="init(#{@review.place.id})"
+  .container ng-show="places.length"
+    .title-h3
+      i.icon.icon-bocal
+      | Мы с командой посовещались и подобрали для вас рестораны похожие
+      br
+      | на
+      strong<> =@booking.place.title
+      | надеемся вам понравится наша подборка:
+    .item-wrap-small
+      div ng-repeat="place in places | limitTo:9"
+        div similar-place="place"
+
+    .to-center
+      a.btn.btn_simple.btn-default href=site_pages_path("msk/search")  Показать другие рестораны

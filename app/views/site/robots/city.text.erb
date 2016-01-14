@@ -1,0 +1,18 @@
+User-Agent: *
+Allow: /places*
+Allow: /search_filters*
+Allow: /filter_groups*
+Allow: /metro_stations*
+Allow: /place_groups*
+Allow: /similar*
+Allow: /landing*
+Allow: /utm_params*
+Allow: /join_us*
+Allow: /adv_us*
+<% if current_city.msk? %>
+Disallow: *?tag
+<% else %>
+Disallow: /blog
+<% end %>
+Sitemap: <%= current_city.host %>/<%= current_city.permalink %>.sitemap.xml.gz
+Host: <%= current_city.host %>

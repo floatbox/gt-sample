@@ -1,0 +1,36 @@
+div ng-controller="PartnersCtrl"
+  .promo-rest
+    .info-section
+      .container
+        .main-title
+          i.icon.icon-bocal
+          | Как увеличить прибыль ресторана?
+        p Мы поможем привести в ваше заведение постоянных посетителей с помощью сайтов Afisha.ru, Gettable.ru и мобильных  приложений. Без скидок, без купонов - только прогрессивную публику с уровнем заработка выше среднего.
+        p Наши гости отдыхают со вкусом – это люди, которые ищут лучшие места Москвы, чтобы провести там время со своими друзьями и любимыми. Люди, которые не привыкли экономить на своем отдыхе, ведь великолепный вечер с приятной компанией в отличном месте полностью себя окупает.
+        p Они ценят каждую минуту – это деловые люди, которые не могут тратить время, чтобы дозвониться в рестораны, ждать ответа администратора и не хотят перекрикивать фоновую музыку. Мы экономим их время, ведь с нами они делают всего лишь 2 клика, тратя на это не более минуты. Наши операторы выполнят всю остальную работу.
+    .carousel.partner_small
+      .container
+        h2.main-title
+          | Наши партнёры:
+        .partner__slide-container
+          .partner__slide ng-repeat="partnersRow in partnersSlider.content | chunk:4" ng-show="partnersSlider.index == $index" ng-class="{ 'is-active' : partnersSlider.index == $index }" ng-swipe-left="prevSlide()" ng-swipe-right="nextSlide()"
+            .partner__item ng-repeat="partner in partnersRow"
+              a.partner__img ng-href="{{partner.href}}"
+                img height="161" ng-src="{{partner.image}}" width="161"
+              a.partner__title ng-href="{{partner.href}}"
+                | {{partner.title}}
+              .partner__info
+                | {{partner.description}}
+          button.arr-prev ng-click="prevSlide()"
+          button.arr-next ng-click="nextSlide()"
+      .carousel__pager
+        button ng-repeat="partnersRow in partnersSlider.content | chunk:4" ng-class="{ 'active' : partnersSlider.index == $index }" ng-click="partnersSlider.index = $index"
+
+  .connect
+    h2.main-title
+      a.active href=""  ng-class="{ active: tab=='join'}" ng-click="tab='join'" Подключить мой ресторан
+      span<>
+        ' /
+      a href="" ng-class="{ active: tab=='advertise'}" ng-click="tab='advertise'" Рекламировать мой ресторан
+    .container ng-include="'site/work_with_us/' + tab + '.html'"
+  .main

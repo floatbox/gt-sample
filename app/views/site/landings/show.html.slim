@@ -1,0 +1,21 @@
+= content_for :meta_title do
+  = current_landing.meta_title
+
+= content_for :meta_description do
+  = current_landing.meta_description
+
+div (
+  ng-controller="BaseSearchCtrl"
+  ng-init="init(#{current_landing_json})"
+)
+  = render 'breadcrumbs'
+
+  - case current_landing.kind
+
+  - when 'search'
+    = render 'search'
+
+  - when 'landing'
+    = render 'landing'
+
+

@@ -1,0 +1,25 @@
+.login.js-login-box
+  .container
+    .login__left
+      .login__title
+        | Войти или зарегистрироваться
+        strong По вашему номеру телефона
+      .login__form
+        .login__row
+          span +7
+          input.js-input-tel placeholder=("(___) ___-__-__") type="tel"
+            button.btn.btn_red-simple type="submit"  войти
+      p Мы никогда не передадим ваш номер третьим лицам. Ваш номер нужен только для подтверждений о ваших бронированиях по СМС, а так же входа в личный кабинет.
+    .login__right
+      .login__title В личном кабинете вы сможете:
+      ul.you-can
+        li
+          i.icon-can1
+          span Запомнить интересные места
+        li
+          i.icon-can2
+          span Сохранять историю посещений
+        li
+          i.icon-can3
+          span Получать бонусы за посещения
+    button.btn-close.js-close-login Скрыть

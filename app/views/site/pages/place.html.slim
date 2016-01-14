@@ -1,0 +1,298 @@
+= render 'site/shared/nav'
+
+#place.main-section.card-page.bardepositContainer (
+  ng-controller="PlaceCtrl"
+  ng-init="init(#{@place.id})"
+  vocab="http://schema.org/"
+  typeof="Restaurant"
+)
+  span typeof="LocalBusiness"
+    meta property="currenciesAccepted" content="RUB"
+    meta property="paymentAccepted" content="cash"
+    meta property="priceRange" content="{{place.price_range.min}}-{{place.price_range.max}} руб."
+  .l-cols
+    .l-col1
+      #photo.place-slider typeof="Place"
+        .place-slideshow keyboard-control="keyboardChangeSlide(dir)"
+          .place-slide (
+            class="{{direction}}"
+            back-img="{{photo.landing}}"
+            alt="{{place.title}}"
+            ng-class="{ active: opts.sliderIndex == $index }"
+            ng-repeat="photo in place.place_photos"
+            ng-click="nextSlide()"
+            ng-style="{ cursor: place.place_photos.length > 1 ? 'pointer' : 'default' }"
+            property="photo"
+          )
+        span class="slideshow__prev" ng-click="prevSlide()" ng-if="place.place_photos"
+        span class="slideshow__next" ng-click="nextSlide()" ng-if="place.place_photos"
+
+      / TITLE
+      .card-content.text-item ng-class="{ 'no-bottom-border': !place.reviews.length && !place.specialization.length }"
+        span.like-counter ng-if="place.likes"
+          span ng-bind="place.likes"
+        h1.h1#title ng-bind="place.seo_title" property="name"
+        .card-content__text
+          p ng-bind="place.description"
+          p (
+            ng-show="isFullDescShown"
+            ng-bind-html="place.full_description"
+            property="description"
+           )
+        a.link-more (
+          ng-if="place.full_description"
+          href=""
+          ng-click="$parent.isFullDescShown = !$parent.isFullDescShown"
+        ) {{$parent.isFullDescShown ? 'Скрыть подробности' : 'Подробности'}}
+
+
+      / BOOK NOW
+      noindex
+        .text-item ng-if="place.works_today && place.probably_will_not_work_tomorrow"
+          h3.h3
+            | Лучше бронировать сейчас
+            i< (
+              class="wtf"
+              popover-placement="right"
+              popover-template="site/place/hurry_up_popup.html"
+              popover-trigger="mouseenter"
+              popover-mini="true"
+              analytics-on="mouseover"
+              analytics-event="place/hurry_up/help/hover"
+              analytics-category="popover"
+            ) ?
+
+      / SOLD OUT
+      noindex
+        .text-item ng-if="!place.works_today && place.similar_available.length"
+          h2.h2.similar-available
+            | На сегодня мест нет
+
+          a.link-more< (
+            href=""
+            ng-click="soldOutExpanded = !soldOutExpanded"
+            ng-bind="soldOutExpanded ? 'Свернуть' : 'Похожие заведения, где есть места на сегодня'"
+            analytics-on="click"
+            analytics-event="step0_reviewsimilar"
+            analytics-pathname="/bardeposit/{{place.id}}"
+          )
+          .row ng-show="soldOutExpanded"
+            .col-md-4 ng-repeat="similar in place.similar_available"
+              a.similar_place (
+                ng-href="{{similar.link}}"
+                ng-class="{ last: $last, first: $first}"
+                analytics-on="click"
+                analytics-event="step0_reviewsimilar_select"
+                analytics-pathname="/bardeposit/{{place.id}}"
+              )
+                img.img-responsive ng-src="{{similar.search_image}}" alt="{{similar.title}}"
+                .title ng-bind="similar.title"
+
+      / REVIEWS
+      #reviews.text-item ng-if="place.reviews.length"
+        h2.h2
+          | Отзывы о {{place.title}}
+          i< (
+            class="wtf"
+            popover-placement="right"
+            popover-template="site/place/review_popup.html"
+            popover-trigger="mouseenter"
+            popover-mini="true"
+            analytics-on="mouseover"
+            analytics-event="place/comments/help/hover"
+            analytics-category="popover"
+          ) ?
+        .comment (
+          ng-repeat="review in place.reviews | limitTo:(isCollapsed ? 3 : 100500) "
+          property="review"
+          typeof="Review"
+        )
+          .comment__top
+            a.comment__pic href="" user-pic="{{review.user_pic}}"
+            .comment__user
+              a (
+                ng-href="{{place.landing_link}}#/reviews/{{review.id}}"
+                ng-bind="review.name"
+                property="author"
+              )
+              i.icon ng-class="{ 'icon-like-s': review.impression == 'like',  'icon-not-like': review.impression == 'dislike' }"
+              span ng-bind="review.posted_on | date:'dd MMMM yyyy'"
+              meta property="datePublished" content="{{review.posted_on | date:'yyyy-MM-dd'}}"
+          nofollow
+            .comment__main (
+              property="description"
+              ng-text-truncate="review.description | emoji"
+              ng-tt-chars-threshold="200"
+            )
+        .extend-actions ng-show="(place.review_count - place.reviews.length > 0) || isCollapsed || (reviewsPage > 1 && !isCollapsed)"
+          a.link-more (
+            href=""
+            ng-click="moreReviews()"
+            ng-show="(place.review_count - place.reviews.length > 0) || isCollapsed"
+          )
+            | Ещё
+            |  {{ place.review_count - place.reviews.length + (isCollapsed ? place.reviews.length - 3 : 0) }}
+          button.btn-close ng-click="$parent.isCollapsed=true" ng-show="reviewsPage > 1 && !isCollapsed"  Скрыть
+
+      / MENU
+      .text-item ng-if="place.menu_categories"
+        h2.h2#menu Меню
+        .menu
+          .menu__nav ng-init="activeCategory = 0"
+            a (
+              href=""
+              ng-repeat="menu_category in place.menu_categories"
+              ng-class="{ active: activeCategory == $index }"
+              ng-click="$parent.activeCategory = $index"
+              ng-bind="menu_category.name"
+            )
+
+          .menu__title ng-repeat-start="menu_sub_category in place.menu_categories[activeCategory].menu_sub_categories" ng-bind="menu_sub_category.name"
+          ul.menu__list ng-repeat-end=""
+            li ng-repeat="menu_item in menu_sub_category.menu_items"
+              span.menu__name ng-bind="menu_item.name"
+              span.menu__price ng-show="menu_item.price_text" ng-bind="menu_item.price_text"
+          ul.menu__list
+            li ng-repeat="menu_item in place.menu_categories[activeCategory].menu_items"
+              span.menu__name ng-bind="menu_item.name"
+              span.menu__price ng-show="menu_item.price_text" ng-bind="menu_item.price_text"
+
+      / FEATURES
+      .text-item ng-if="place.features"
+        h2.h2
+          | Особенности {{place.category_with_title_r}}
+          span ng-if="place.alternative_title" {{' / ' + place.alternative_title}}
+        p.features
+          span ng-repeat="feature in place.features"
+            span ng-if="feature.landings.length == 0" ng-bind="feature.title"
+            a (
+              ng-if="feature.landings.length"
+              ng-bind="feature.title"
+              ng-href="{{feature.landings[0].link}}"
+              title="{{feature.landings[0].title}}"
+              property="{{feature.landings[0].link.indexOf('cuisine') != -1 ? 'servesCuisine' : ''}}"
+            )
+            span> ng-if="!$last" ,
+
+      / SIMULAR
+      .text-item ng-if="place.similar_records.length"
+        h2.h2
+          | Похожие заведения
+          a< (
+            href=""
+            ng-click="similarExpanded = !similarExpanded"
+            ng-bind="similarExpanded ? '–' : '+'"
+            analytics-on="click"
+            analytics-event="step0_reviewsimilarBottom"
+            analytics-pathname="/bardeposit/{{place.id}}"
+          )
+        .row ng-show="similarExpanded"
+          .col-md-4 ng-repeat="similar in place.similar_records"
+            a.similar_place (
+              ng-href="{{similar.link}}"
+              ng-class="{ last: $last, first: $first}"
+              analytics-on="click"
+              analytics-event="step0_reviewsimilarBottom_select"
+              analytics-pathname="/bardeposit/{{place.id}}"
+            )
+              img.img-responsive ng-src="{{similar.search_image}}" alt="{{similar.title}}"
+              .title ng-bind="similar.title"
+
+    / SIDEBAR
+    .l-col2
+      .l-col2__in.place_sidebar (
+        affix=""
+        additional-bottom-offset="100"
+        additional-top-offset="0"
+        bump-to="footer"
+        relative-to="place"
+        ng-class="{affix:affixed}"
+        ng-style="offset"
+      )
+        div
+          .card-info.card-info_place
+            .card-info__icon
+              i.icon.icon-card-point
+            .card-info__main
+              p bind-html-unsafe="place.address" property="address"
+              span.metro_station ng-if="place.metro_station"
+                a ng-href="{{place.metro_station.landing_link}}" м. {{place.metro_station.name}}
+
+          span typeof="Place" ng-if="place.longitude && place.latitude"
+            meta property="hasMap" content="{{place.landing_link}}#/map"
+            a.map-card (
+              href="#/map"
+              analytics-on="click"
+              analytics-event="place/map/click"
+              analytics-category="map"
+            )
+              img ng-src="{{map}}" width="280" height="94"
+          .card-info
+            .card-info__icon
+              i.icon.icon-card-clock
+            .card-info__main
+              meta ng-repeat="time in place.rdfa_working_time" property="openingHours" datetime="{{time}}"
+              p ng-bind-html="place.working_time"
+          .card-info.card-info_bill
+            .card-info__icon
+              i.icon.icon-card-wallet
+            .card-info__main
+              p Средний чек: {{place.avg_price_str}}
+          .card-info.card-info_tel ng-if="place.show_phone"
+            .card-info__icon
+              i.icon.icon-card-phone
+            .card-info__main
+              p> ng-if="!place.dedicated_phone_extended"
+                a.phone-link href="tel:#{site_utm_phone_plain}" property="telephone" = site_utm_phone
+              p> ng-if="place.dedicated_phone_extended"
+                a.phone-link (
+                  ng-href="tel:{{place.dedicated_phone_extended | plainPhone}}"
+                  property="telephone"
+                  ng-bind="place.dedicated_phone_extended | tel"
+                )
+          .order-item ng-if="place.activity && !place.active_promo"
+            a.btn.btn_orange.bardepositLink (
+              ng-click="hideSocial()"
+              ng-href="{{ bookingHref() }}"
+              ng-if="place.id"
+              analytics-on="click"
+              analytics-event="place/sidebar/booking/click"
+              analytics-category="booking"
+              analytics-label="{{place.title}}"
+              property="makesOffer"
+            ) Заказать столик
+
+            span.available> ng-if="isAvailable"
+              i.icon.icon-ok
+              | Есть места
+            ul.strong-points
+              li Лучший столик
+              li Это бесплатно
+              li Без звонков за 2 минуты
+
+          .with-promo ng-if="place.activity && place.active_promo"
+            .order-item
+              a.btn.btn_orange.bardepositLink (
+                ng-click="hideSocial()"
+                ng-href="{{ bookingHref() }}"
+                ng-if="place.id"
+                analytics-on="click"
+                analytics-event="place/sidebar/booking/click"
+                analytics-category="booking"
+                analytics-label="{{place.title}}"
+                property="makesOffer"
+              ) Заказать столик
+
+            .promo
+              img (
+                ng-class="{{ place.active_promo.kind }}"
+                ng-src="{{ place.active_promo.site_image }}"
+              )
+
+              a.promo-terms (
+                ng-if="place.active_promo.terms_link"
+                ng-href="{{ place.active_promo.terms_link }}"
+                target="_blank"
+              ) Условия акции
+
+      i.sidebar-target

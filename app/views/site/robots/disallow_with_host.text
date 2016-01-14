@@ -1,0 +1,4 @@
+User-Agent: *
+Disallow: /
+Sitemap: https://gettable.ru/msk.sitemap.xml.gz
+Host: https://gettable.ru

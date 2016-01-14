@@ -1,0 +1,25 @@
+#fb-root
+
+javascript:
+  window.fbAsyncInit = function() {
+
+    FB.init({
+      appId      : '272868056179428',
+      channelUrl : '//gettable.ru/channel.html', // Channel File for x-domain communication
+      status     : false, // check the login status upon init?
+      cookie     : false, // set sessions cookies to allow your server to access the session?
+      xfbml      : true  // parse XFBML tags on this page?
+    });
+
+    FB.Event.subscribe('xfbml.render', function(response) {
+      FB.Canvas.setSize({ width: 800, height: 541 });
+    });
+  };
+
+  (function(d, debug){
+    var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement('script'); js.id = id; js.async = true;
+    js.src = "//connect.facebook.net/en_US/all" + (debug ? "/debug" : "") + ".js";
+    ref.parentNode.insertBefore(js, ref);
+  }(document, /*debug*/ false));

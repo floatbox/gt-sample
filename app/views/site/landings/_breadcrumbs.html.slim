@@ -1,0 +1,37 @@
+#sort-section.sort-section ng-class="{ 'sort-section_map': appSettings.mode == '!/map'}"
+  .sort-section__in
+    .container
+      ol.breadcrumb xmlns:v="http://rdf.data-vocabulary.org/#"
+        = render 'breadcrumbs_list', breadcrumbs: current_landing.bread_crumbs_serialized
+
+      .btn-group.btn-group_styled.btn-group_icon ng-if="appSettings.mode=='/search' || appSettings.mode=='/map'"
+        a.btn (
+          ng-model="appSettings.mode"
+          ng-href="#/search?filter={{filtersAsParam()}}"
+          ng-class="{ active: appSettings.mode=='/search' }"
+        )
+          i.icon-list-black
+        a.btn (
+          ng-model="appSettings.mode"
+          ng-href="#/map?filter={{filtersAsParam()}}"
+          ng-class="{ active: appSettings.mode=='/map' }"
+        )
+          i.icon-map
+
+      .btn-group.btn-group_styled ng-if="appSettings.mode=='/search'"
+        button.btn (
+          type="button"
+          ng-model="selectedFilters.sort"
+          btn-radio="[{ value: 'popular' }]"
+          analytics-on="click"
+          analytics-event="search/nav/popular/click"
+          analytics-category="nav"
+        ) Популярные
+        button.btn (
+          type="button"
+          ng-model="selectedFilters.sort"
+          btn-radio="[{ value: 'latest' }]"
+          analytics-on="click"
+          analytics-event="search/nav/latest/click"
+          analytics-category="nav"
+        ) Новинки

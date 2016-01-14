@@ -1,0 +1,38 @@
+- content_for :meta_title, "Карта сайта"
+
+.main
+  .offer__term.offer__body
+    .container
+      .row
+        .col-md-4
+          .main-title Заведения
+          ul.list-unstyled
+            - @categories.each do |landing|
+              li = link_to landing.label, landing.link
+
+          - if @filters.any?
+            .main-title Фильтры
+            ul.list-unstyled
+              - @filters.each do |landing|
+                li = link_to landing.label, landing.link
+
+          - if @cuisine.any?
+            .main-title Кухни
+            ul.list-unstyled
+              - @cuisine.each do |landing|
+                li = link_to landing.label, landing.link
+
+        .col-md-4
+          - if @network.any?
+            .main-title Сети
+            ul.list-unstyled
+              - @network.each do |landing|
+                li = link_to landing.label, landing.link
+
+        .col-md-4
+          - if @metro.any?
+            .main-title Местоположение
+            ul.list-unstyled
+              - @metro.each do |landing|
+                li = link_to landing.label, landing.link
+

@@ -1,0 +1,40 @@
+= content_for :meta_title, "Блог"
+
+.main-section.card-page.no-top-margin
+  .l-cols.shadow
+    .card-content.text-item.blog.text-center
+      .text-item__in
+        p Лучшие события и ресторанные новости
+    .bcategory
+      a.bcategory__item class="#{'is-active' if params[:tag].nil? }" href=site_posts_path  Все темы
+      - Post.popular_tags.each do |tag|
+        a.bcategory__item class="#{'is-active' if params[:tag] == tag.title }" href=site_posts_path(tag: tag.title)  = tag.title
+    .article
+      #masonry-container.article__in
+        - @posts.each_with_index do |post, index|
+          .article__item href=site_post_path(post)
+            - if post.photo_file_name
+              .article__img
+                a href=site_post_path(post)
+                  img alt=post.title src=post.photo.url(:small) width='250' height='200'
+                .article__view
+                  span
+                    i.eye
+                    = post.total_views
+            .article__txt
+              p.article__title
+                a href=site_post_path(post) = post.title
+              p = post.description
+              a.read-more href=site_post_path(post)  Читать далее
+      .text-center
+        = paginate @posts
+
+    .clearfix
+    hr
+    .popular
+      h3 Популярное
+      - Post.popular.each do |post|
+        a.popular__item.onleft href=site_post_path(post)
+          - if post.photo_file_name
+            img alt=post.title src=post.photo.url(:small) width='250' height='200'
+          p = post.title
